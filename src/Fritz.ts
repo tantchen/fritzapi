@@ -57,6 +57,12 @@ export default class Fritz {
 
   protected deviceList: AVMDevice[] | null;
 
+  /**
+   * Default constructor
+   * @param username
+   * @param password
+   * @param url if not set default is 'http://fritz.box'
+   */
   constructor(username: string, password: string, url?: string) {
     this.sid = null;
     this.username = username;
@@ -67,6 +73,9 @@ export default class Fritz {
     }
   }
 
+  /**
+   * get SID
+   */
   async getSID(): Promise<string> {
     if (this.sid === null) {
       this.sid = await this.getSessionID(this.username, this.password);
@@ -77,10 +86,12 @@ export default class Fritz {
     return this.sid;
   }
 
-  /*
-   * Functional API
+  /**
+   * Request helper
+   * @param request
+   * @param options
+   * @private
    */
-
   private static async httpRequest<T>(
     request: string,
     options?: ReqOption
@@ -144,13 +155,12 @@ export default class Fritz {
     return Fritz.httpRequest<T>(ePath.join(''));
   }
 
-  // #############################################################################
-
-  /*
-   * Session handling
+  /**
+   * get session id
+   * @param username
+   * @param password
+   * @private
    */
-
-  // get session id
   private async getSessionID(
     username: string,
     password: string
@@ -175,7 +185,9 @@ export default class Fritz {
     return sessionID;
   }
 
-  // check if session id is OK
+  /**
+   * check if session id is OK
+   */
   async checkSession(): Promise<boolean> {
     const body = await this.executeCommand<string>(
       true,
@@ -187,11 +199,9 @@ export default class Fritz {
     return !!sessionID && sessionID[1] !== '0000000000000000';
   }
 
-  /*
-   * General functions
+  /**
+   *  get OS version
    */
-
-  // get OS version
   async getOSVersion() {
     const req: ReqOption = {
       method: 'POST',
@@ -209,12 +219,31 @@ export default class Fritz {
     return osVersion;
   }
 
-  // get template information (XML)
+  /**
+   * get full FritzBox config
+   */
+  async getDataSheet(): Promise<OSInfo> {
+    const req: ReqOption = {
+      method: 'POST',
+      form: {
+        sid: await this.getSID(),
+        xhr: 1,
+        page: 'overview',
+      },
+    };
+    return Fritz.httpRequest<OSInfo>(`${this.url}/data.lua`, req);
+  }
+
+  /**
+   * get template information (XML)
+   */
   async getTemplateListInfos(): Promise<string> {
     return this.executeCommand<string>(true, 'gettemplatelistinfos', null);
   }
 
-  // get template information (json)
+  /**
+   *  get template information (json)
+   */
   getTemplateList: IBase<any[]> = async () => {
     const templateinfo = await this.getTemplateListInfos();
 
@@ -229,24 +258,33 @@ export default class Fritz {
     return out;
   };
 
-  // apply template
+  /**
+   *  apply template
+   * @param ain
+   */
   async applyTemplate(ain: string) {
     return this.executeCommand(true, 'applytemplate', ain);
   }
 
-  // get basic device info (XML)
-
+  /**
+   * get basic device info (XML)
+   * @param ain
+   */
   async getBasicDeviceStats(ain: string) {
     return this.executeCommand(true, 'getbasicdevicestats', ain);
   }
 
-  // get detailed device information (XML)
+  /**
+   *  get detailed device information (XML)
+   */
 
   async getDeviceListInfos() {
     return this.executeCommand<string>(true, 'getdevicelistinfos', null);
   }
 
-  // get device list
+  /**
+   * get device list
+   */
   async getDeviceList(): Promise<AVMDevice[]> {
     const devicelistinfo = await this.getDeviceListInfos();
     const devicesCore = JSON.parse(parser.toJson(devicelistinfo));
@@ -261,10 +299,11 @@ export default class Fritz {
     return devices;
   }
 
-  // get device list by filter criteria
+  /**
+   * get device list by filter criteria
+   * @param filter
+   */
   async getDeviceListFiltered(filter: any): Promise<AVMDevice[]> {
-    /* jshint laxbreak:true */
-
     if (!this.deviceList) {
       this.deviceList = await this.getDeviceList();
     }
@@ -279,7 +318,10 @@ export default class Fritz {
     });
   }
 
-  // get single device
+  /**
+   *  get single device
+   * @param ain
+   */
   async getDevice(ain: string): Promise<AVMDevice | null> {
     const devices = await this.getDeviceListFiltered({
       identifier: ain,
@@ -287,13 +329,19 @@ export default class Fritz {
     return devices.length ? devices[0] : null;
   }
 
-  // get temperature- both switches and thermostats are supported, but not powerline modules
+  /**
+   * get temperature- both switches and thermostats are supported, but not powerline modules
+   * @param ain
+   */
   async getTemperature(ain: string): Promise<number> {
     const body = await this.executeCommand<string>(true, 'gettemperature', ain);
     return parseFloat(body) / 10; // °C
   }
 
-  // get presence from deviceListInfo
+  /**
+   * get presence from deviceListInfo
+   * @param ain
+   */
   async getPresence(ain: string): Promise<boolean> {
     return !!(await this.getDevice(ain))?.presence;
   }
@@ -302,32 +350,46 @@ export default class Fritz {
    * Switches
    */
 
-  // get switch list
+  /**
+   * get switch list
+   */
   async getSwitchList(): Promise<any[]> {
     let res = await this.executeCommand<string>(true, 'getswitchlist', null);
     res = res.replace('\n', '');
     return res === '' ? [] : res.split(',');
   }
 
-  // get switch state
+  /**
+   * get switch state
+   * @param ain
+   */
   getSwitchState: IExt<boolean> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'getswitchstate', ain);
     return /^1/.test(body); // true if on
   };
 
-  // turn an outlet on. returns the state the outlet was set to
+  /**
+   * turn an outlet on. returns the state the outlet was set to
+   * @param ain
+   */
   setSwitchOn: IExt<boolean> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'setswitchon', ain);
     return /^1/.test(body); // true if on
   };
 
-  // turn an outlet off. returns the state the outlet was set to
+  /**
+   * turn an outlet off. returns the state the outlet was set to
+   * @param ain
+   */
   setSwitchOff: IExt<boolean> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'setswitchoff', ain);
     return /^1/.test(body); // false if off
   };
 
-  // toggle an outlet. returns the state the outlet was set to
+  /**
+   * toggle an outlet. returns the state the outlet was set to
+   * @param ain
+   */
   setSwitchToggle: IExt<boolean> = async (ain) => {
     const body = await this.executeCommand<string>(
       true,
@@ -337,7 +399,10 @@ export default class Fritz {
     return /^1/.test(body); // false if off
   };
 
-  // get the total enery consumption. returns the value in Wh
+  /**
+   * get the total enery consumption. returns the value in Wh
+   * @param ain
+   */
   getSwitchEnergy: IExt<number> = async (ain) => {
     const body = await this.executeCommand<string>(
       true,
@@ -347,14 +412,20 @@ export default class Fritz {
     return parseFloat(body); // Wh
   };
 
-  // get the current enery consumption of an outlet. returns the value in mW
+  /**
+   * get the current enery consumption of an outlet. returns the value in mW
+   * @param ain
+   */
   getSwitchPower: IExt<number | null> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'getswitchpower', ain);
     const power = parseFloat(body);
     return Number.isNaN(power) ? null : power / 1000; // W
   };
 
-  // get the outet presence status
+  /**
+   * get the outet presence status
+   * @param ain
+   */
   getSwitchPresence: IExt<boolean> = async (ain) => {
     const body = await this.executeCommand<string>(
       true,
@@ -364,7 +435,10 @@ export default class Fritz {
     return /^1/.test(body); // true if present
   };
 
-  // get switch name
+  /**
+   * get switch name
+   * @param ain
+   */
   getSwitchName: IExt<string> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'getswitchname', ain);
     return body.trim();
@@ -374,7 +448,9 @@ export default class Fritz {
    * Thermostats
    */
 
-  // get the thermostat list
+  /**
+   * get the thermostat list
+   */
   getThermostatList: IBase<any> = async () => {
     const devices = await this.getDeviceListFiltered({
       functionbitmask: FUNCTION_THERMOSTAT,
@@ -384,34 +460,55 @@ export default class Fritz {
     });
   };
 
-  // set target temperature (Solltemperatur)
+  /**
+   * set target temperature (Solltemperatur)
+   * @param ain
+   * @param temp
+   */
   async setTempTarget(ain: string, temp: number): Promise<number> {
     await this.executeCommand(true, `sethkrtsoll&param=${temp2api(temp)}`, ain);
     return temp;
   }
 
-  // get target temperature (Solltemperatur)
+  /**
+   * get target temperature (Solltemperatur)
+   * @param ain
+   */
   getTempTarget: IExt<ITemp> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'gethkrtsoll', ain);
     return api2temp(body);
   };
 
-  // get night temperature (Absenktemperatur)
+  /**
+   * get night temperature (Absenktemperatur)
+   * @param ain
+   */
   getTempNight: IExt<ITemp> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'gethkrabsenk', ain);
     return api2temp(body);
   };
 
-  // get comfort temperature (Komforttemperatur)
+  /**
+   * get comfort temperature (Komforttemperatur)
+   * @param ain
+   */
   getTempComfort: IExt<ITemp> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'gethkrkomfort', ain);
     return api2temp(body);
   };
 
-  // ------------------------------------------------
-  // Not yet tested - deactivated for now
+  /**
+   * ------------------------------------------------
+   */
+  /**
+   * Not yet tested - deactivated for now
+   */
   //
-  // activate boost with end time or deactivate boost
+  /**
+   * activate boost with end time or deactivate boost
+   * @param ain
+   * @param endtime
+   */
   async setHkrBoost(ain: string, endtime: number) {
     await this.executeCommand(
       true,
@@ -421,7 +518,11 @@ export default class Fritz {
     return endtime;
   }
 
-  // activate window open  with end time or deactivate boost
+  /**
+   * activate window open  with end time or deactivate boost
+   * @param ain
+   * @param endtime
+   */
   async setHkrWindowOpen(ain: string, endtime: number) {
     await this.executeCommand(
       true,
@@ -430,7 +531,11 @@ export default class Fritz {
     );
   }
 
-  // activate window open  with end time or deactivate boost
+  /**
+   * activate window open  with end time or deactivate boost
+   * @param deviceId
+   * @param offset
+   */
   async setHkrOffset(deviceId: string, offset: number) {
     const path = '/net/home_auto_hkr_edit.lua';
 
@@ -461,7 +566,10 @@ export default class Fritz {
     await Fritz.httpRequest(path, req);
     return offset;
   }
-  // ------------------------------------------------
+
+  /**
+   * ------------------------------------------------
+   */
 
   /*
    * AVM Buttons Fritz!DECT 400 and Fritz!DECT 440
@@ -472,7 +580,9 @@ export default class Fritz {
    * The Fritz!DECT 440 should have an additional 'temperature' property
    */
 
-  // get a list of all button devices
+  /**
+   * get a list of all button devices
+   */
   getButtonList: IBase<string[]> = async () => {
     const devices = await this.getDeviceListFiltered({
       functionbitmask: FUNCTION_BUTTON,
@@ -486,7 +596,9 @@ export default class Fritz {
    * Light bulbs (HAN-FUN)
    */
 
-  // get a list of all bulbs
+  /**
+   * get a list of all bulbs
+   */
   getBulbList: IBase<string[]> = async () => {
     const devices = await this.getDeviceListFiltered({
       functionbitmask: FUNCTION_LIGHT,
@@ -496,7 +608,9 @@ export default class Fritz {
     });
   };
 
-  // get a list of bulbs which support colors
+  /**
+   * get a list of bulbs which support colors
+   */
   getColorBulbList: IBase<string[]> = async () => {
     const devices = await this.getDeviceListFiltered({
       functionbitmask: FUNCTION_LIGHT || FUNCTION_COLORCONTROL,
@@ -506,9 +620,15 @@ export default class Fritz {
     });
   };
 
-  // switch the device on, of or toggle its current state
+  /**
+   * switch the device on, of or toggle its current state
+   * @param ain
+   * @param state
+   */
   async setSimpleOnOff(ain: string, state: IState) {
-    // ain = ain.replace('-1','');
+    /**
+     * ain = ain.replace('-1','');
+     */
     await this.executeCommand(
       true,
       `setsimpleonoff&onoff=${state2api(state)}`,
@@ -517,7 +637,11 @@ export default class Fritz {
     return state;
   }
 
-  // Dimm the device, allowed values are 0 - 255
+  /**
+   * Dimm the device, allowed values are 0 - 255
+   * @param ain
+   * @param level
+   */
   async setLevel(ain: string, level: number) {
     await this.executeCommand(
       true,
@@ -527,23 +651,35 @@ export default class Fritz {
     return level;
   }
 
-  // Dimm the device, allowed values are 0 - 100
+  /**
+   * Dimm the device, allowed values are 0 - 100
+   * @param ain
+   * @param levelInPercent
+   */
   async setLevelPercentage(ain: string, levelInPercent: number) {
     return this.executeCommand(
       true,
       `setlevelpercentage&level=${level2api(levelInPercent, true)}`,
       ain
     ).then(function (body) {
-      // api does not return a value
+      /**
+       * api does not return a value
+       */
       return levelInPercent;
     });
   }
 
-  // Set the color and saturation of a color bulb
-  // Valid color values are:
-  // red, orange, yellow, lime, green, turquoise, cyan,
-  // lightblue, blue, purple, magenta and pink
-  // Valid satindex values are: 0, 1 or 2
+  /**
+   *  Set the color and saturation of a color bulb
+   * Valid color values are:
+   * red, orange, yellow, lime, green, turquoise, cyan,
+   * lightblue, blue, purple, magenta and pink
+   * Valid satindex values are: 0, 1 or 2
+   * @param ain
+   * @param color
+   * @param satindex
+   * @param duration
+   */
   async setColor(
     ain: string,
     color: ColorName,
@@ -561,9 +697,12 @@ export default class Fritz {
     return color;
   }
 
-  // Set the color temperature of a bulb.
-  // Valid values are 2700, 3000, 3400,3800, 4200, 4700, 5300, 5900 and 6500.
-  // Other values are adjusted to one of the above values
+  /**
+   * Set the color temperature of a bulb.
+   * @param ain
+   * @param temperature Valid values are 2700, 3000, 3400,3800, 4200, 4700, 5300, 5900 and 6500.
+   * @param duration
+   */
   async setColorTemperature(
     ain: string,
     temperature: number,
@@ -600,19 +739,25 @@ export default class Fritz {
     return blindState;
   }
 
-  // get battery charge
-  // Attention: this function queries the whole device list to get the value for one device.
-  // If multiple device will be queried for the battery status, a better approach would be to
-  // get the device list once and then filter out the devices of interest.
+  /**
+   *  get battery charge
+   * Attention: this function queries the whole device list to get the value for one device.
+   * If multiple device will be queried for the battery status, a better approach would be to
+   * get the device list once and then filter out the devices of interest.
+   * @param ain
+   */
   getBatteryCharge: IExt<unknown | null> = async (ain) => {
     const device = await this.getDevice(ain);
     return device?.battery;
   };
 
-  // Get the window open flag of a thermostat
-  // Attention: this function queries the whole device list to get the value for one device.
-  // If multiple device will be queried for the window open status, a better approach would
-  // be to get the device list once and then filter out the devices of interest.
+  /**
+   * Get the window open flag of a thermostat
+   * Attention: this function queries the whole device list to get the value for one device.
+   * If multiple device will be queried for the window open status, a better approach would
+   * be to get the device list once and then filter out the devices of interest.
+   * @param ain
+   */
   getWindowOpen: IExt<boolean> = async (ain) => {
     const device = await this.getDevice(ain);
     return device?.hkr?.windowopenactiv === '1';
@@ -708,6 +853,9 @@ export default class Fritz {
       }); */
   }
 
+  /**
+   * get phone devices
+   */
   async getPhoneList() {
     return this.executeCommand(
       true,

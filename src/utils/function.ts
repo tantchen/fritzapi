@@ -1,10 +1,10 @@
 import { ColorName, colors, MAX_TEMP, MIN_TEMP } from './const';
 import { IState, ITemp } from './lib';
 
-/*
- * Temperature conversion
+/**
+ * convert temp to api
+ * @param temp
  */
-
 function temp2api(temp: unknown) {
   let res;
 
@@ -21,6 +21,10 @@ function temp2api(temp: unknown) {
   return res;
 }
 
+/**
+ * convert api to temp
+ * @param param
+ */
 function api2temp(param: string | number): ITemp {
   if (param === 254) return 'on';
   if (param === 253) return 'off';
@@ -33,6 +37,10 @@ function api2temp(param: string | number): ITemp {
   return (parseFloat(param) - 16) / 2 + 8;
 }
 
+/**
+ * time to api
+ * @param seconds
+ */
 function time2api(seconds: number) {
   if (seconds <= 0) {
     return 0;
@@ -46,7 +54,10 @@ function time2api(seconds: number) {
 //     // convert the input to a readable timestamp
 //     return 0;
 // }
-
+/**
+ * state to api
+ * @param param
+ */
 function state2api(param: IState): number {
   // convert the input to an allowed value
   if (typeof param === 'number') {
@@ -63,6 +74,11 @@ function state2api(param: IState): number {
   }
 }
 
+/**
+ * level to api
+ * @param param
+ * @param isPercent
+ */
 function level2api(param: number, isPercent: boolean) {
   // convert the input to an allowed value
   if (isPercent) return param > 100 ? 100 : param;
@@ -84,13 +100,15 @@ function colortemp2api(param: number) {
   return 2700;
 }
 
-// Fritz color schemes
-// The fritzbox accepts only a limited range of hue/saturation combinations
-// to set the color of a bulb. The hue value must be one of the 12 predefined
-// values for the base colors and each of the hue values has its own set of
-// three saturation values.
-// Any attempt to use other hue/saturaion values fails silently.
-
+/**
+ *  Fritz color schemes
+ * The fritzbox accepts only a limited range of hue/saturation combinations
+ * to set the color of a bulb. The hue value must be one of the 12 predefined
+ * values for the base colors and each of the hue values has its own set of
+ * three saturation values.
+ * Any attempt to use other hue/saturaion values fails silently.
+ * @param color
+ */
 function color2apihue(color: ColorName) {
   const col = colors.get(color);
   if (col !== undefined)
@@ -99,6 +117,11 @@ function color2apihue(color: ColorName) {
   return 0;
 }
 
+/**
+ * resolve satindex
+ * @param color
+ * @param satindex
+ */
 function satindex2apisat(color: ColorName, satindex: number) {
   const col = colors.get(color);
   if (col !== undefined)

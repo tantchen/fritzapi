@@ -30,6 +30,9 @@ describe( 'FritzClient', () => {
     test( "can check os version", async () => {
         expect( await client.getOSVersion() ).not.toBeNull();
     } )
+    test( "get full fritz config", async () => {
+        expect(  await client.getDataSheet()).not.toBeNull();
+    } )
 } );
 
 describe("Template",()=>{

@@ -96,6 +96,9 @@ type ColorName =
   | 'magenta'
   | 'pink';
 
+/**
+ * color map
+ */
 const colors = new Map<ColorName, HueColor>([
   ['red', { hue: 358, sat: [180, 112, 54], val: [255, 255, 255] }],
   ['orange', { hue: 35, sat: [214, 140, 72], val: [252, 252, 255] }],
@@ -113,11 +116,19 @@ const colors = new Map<ColorName, HueColor>([
 
 export { colors, ColorName };
 
+/**
+ * min temperature
+ */
 const MIN_TEMP = 8;
+/**
+ * max temperature
+ */
 const MAX_TEMP = 28;
 
 export { MIN_TEMP, MAX_TEMP };
-
+/**
+ * default url if not set in the default constructor
+ */
 const defaultUrl = 'http://fritz.box';
 
 export { defaultUrl };
