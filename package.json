@@ -1,9 +1,9 @@
 {
-  "name": "fritzapi",
-  "version": "0.13.0-pre03",
-  "author": "Andreas Goetz <cpuidle@gmx.de>",
+  "name": "@elschnagoo/fritzapi",
+  "version": "0.13.0",
+  "author": "David Nagy <david.nagy@quinto.io>",
   "description": "Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices",
-  "homepage": "https://github.com/andig/fritzapi",
+  "homepage": "https://elschnagoo.github.io/fritzapi/",
   "license": "MIT",
   "contributors": [
     {
@@ -19,8 +19,8 @@
       "email": "github@falss.de"
     },
     {
-      "name": "David Nagy",
-      "email": "david.nagy@quinto.io"
+      "name": "Andreas Goetz",
+      "email": "cpuidle@gmx.de"
     }
   ],
   "keywords": [
@@ -44,7 +44,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andig/fritzapi.git"
+    "url": "git+https://github.com/Elschnagoo/fritzapi.git"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

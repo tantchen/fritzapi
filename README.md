@@ -1,5 +1,13 @@
-# fritzapi
+# @elschnagoo/fritzapi
 > **Forked** rework in **Typescript** and more modern code style
+
+
+[![NPM Version](https://img.shields.io/npm/v/@elschnagoo/fritzapi.svg)](https://www.npmjs.com/package/@elschnagoo/fritzapi)
+[![NPM Downloads](https://img.shields.io/npm/dt/@elschnagoo/fritzapi.svg)](https://www.npmjs.com/package/@elschnagoo/fritzapi)
+
+
+## Install
+    npm i @elschnagoo/fritzapi
 
 ## Links
 
@@ -10,7 +18,7 @@
 
 ## New example in Ts:
 ```ts
-import Fritz from 'fritzapi'
+import Fritz from '@elschnagoo/fritzapi'
 
 const f = new Fritz("user", "password", "http://192.168.178.1");
 

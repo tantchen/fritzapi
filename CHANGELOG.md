@@ -1,15 +1,9 @@
-## 0.13.0 - pre 02
+## 0.13.0
 
 - Add color type
 - Add more unit tests
 - Add full OSInfoInterface
 - Add more test env variables
-- Fix post form format
-
-
-## 0.13.0 - pre 01
-
-- Rewrite legacy js in `typescript`
 - Add `eslint` airbnb config
 - Add `typedoc` for documentation
 - Replace `mocha` & `istanbul` with `jest`
@@ -17,6 +11,8 @@
 - Replace `xml2json-light` with `xml2json`
 - Remove `bluebird` use native Promise
 - Remove `cheerio`
+- Fix post form format
+- Rewrite legacy js in `typescript`
 
 ## 0.12.0
 
