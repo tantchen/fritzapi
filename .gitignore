@@ -63,3 +63,10 @@ typings/
 # vscode
 .vscode/
 fritzapi.code-workspace
+
+# jetbrains
+.idea
+
+# build
+dist
+/fritzapi.iml

@@ -1,3 +1,14 @@
+## 0.13.0 - pre 01
+
+- Rewrite legacy js in `typescript`
+- Add `eslint` airbnb config
+- Add `typedoc` for documentation
+- Replace `mocha` & `istanbul` with `jest`
+- Replace `request` with `axios`
+- Replace `xml2json-light` with `xml2json`
+- Remove `bluebird` use native Promise
+- Remove `cheerio`
+
 ## 0.12.0
 
 - enable blind controll

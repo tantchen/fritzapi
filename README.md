@@ -1,10 +1,31 @@
 # fritzapi
+> **Forked** rework in **Typescript** and more modern code style
+
+## New example in Ts:
+```ts
+// legacy ->  var Fritz = require('fritzapi').Fritz;
+import Fritz from 'fritzapi'
+// legacy ->  var Fritz = require('fritzapi').Fritz;
+
+const f = new Fritz("user", "password", "http://192.168.178.1");
+
+(async ()=>{
+    const sid = await f.getSID();
+    console.log(sid)
+
+    const list = await f.getSwitchList();
+    console.log(list)
+})()
+
+```
+# Original README.MD
+
 [![NPM Version](https://img.shields.io/npm/v/fritzapi.svg)](https://www.npmjs.com/package/fritzapi)
 [![NPM Downloads](https://img.shields.io/npm/dt/fritzapi.svg)](https://www.npmjs.com/package/fritzapi)
 [![Build status](https://travis-ci.org/andig/fritzapi.svg?branch=master)](https://travis-ci.org/andig/fritzapi)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HWZTN5AU8LSUC)
 
-Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices. 
+Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices.
 
 [homebridge-fritz](https://github.com/andig/homebridge-fritz) and [pimatic-fritz](https://github.com/andig/pimatic-fritz) are built on fritzapi.
 
@@ -30,7 +51,7 @@ Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices.
 
 While `getTemperature` works for outlets, it is not available for (outlet) groups that can be created through the Fritz!Box user interface.
 
-`getDeviceListInfos` was named `getDeviceListInfo` in earlier versions. For consistency with the official Fritz!Box API the name has been changed. The `getDeviceListInfo` name is deprecated and will be removed in a future release. 
+`getDeviceListInfos` was named `getDeviceListInfo` in earlier versions. For consistency with the official Fritz!Box API the name has been changed. The `getDeviceListInfo` name is deprecated and will be removed in a future release.
 In general, use of `getDeviceListInfos` is discouraged as the equivalent `getDeviceList` function which returns an object interface instead of XML is easier to use.
 
 
@@ -79,15 +100,15 @@ Bulb functions are only available as of Fritz!OS 7.20
 - Set the color and saturation `setColor`, see note 1
 - Set the color temperature `setColorTemperature`, see note 2
 
-**Note 1**  
-The color api calls of the FritzBox accept only a predefined set of values. 
-To get easy access to the predefined values fritzapi accepts the following values as the color:  
-`red, orange, yellow, lime, green, turquoise, cyan, lightblue, blue, purple, magenta, pink`  
+**Note 1**
+The color api calls of the FritzBox accept only a predefined set of values.
+To get easy access to the predefined values fritzapi accepts the following values as the color:
+`red, orange, yellow, lime, green, turquoise, cyan, lightblue, blue, purple, magenta, pink`
 The saturation can be `0, 1 or 2` to select one of the predefined saturation values for the color.
 
-**Note 2**  
-The color temperature api calls of the FritzBox accept only a predefined set of values. 
-Valid values are `2700, 3000, 3400,3800, 4200, 4700, 5300, 5900 and 6500`.  
+**Note 2**
+The color temperature api calls of the FritzBox accept only a predefined set of values.
+Valid values are `2700, 3000, 3400,3800, 4200, 4700, 5300, 5900 and 6500`.
 Other values are adjusted by fritzapi to one of the above values.
 
 ### WLAN functions
@@ -160,7 +181,7 @@ fritz.getSessionID("user", "password", {
 
 Below is the output of `getDeviceList` for reference.
 
-The list was produced for various Fritz devices I've had around. It might have changed in the meantime depending on device firmware or Fritz HTTP API version. 
+The list was produced for various Fritz devices I've had around. It might have changed in the meantime depending on device firmware or Fritz HTTP API version.
 These definitions remain cached by the Fritz!Box even if the device is no longer connected. The device presence is indicated by the `present` attribute.
 
 ### Powerline
@@ -188,11 +209,11 @@ These definitions remain cached by the Fritz!Box even if the device is no longer
       name: 'FRITZ!DECT 200 #1',
       switch: { state: '', mode: '', lock: '', devicelock : '' },
       simpleonoff { state: '' },
-      powermeter: { voltage: '', power: '', energy: '' }, 
+      powermeter: { voltage: '', power: '', energy: '' },
       temperature: { celsius: '', offset: '' }
       }
 
-    { identifier: '116570031825',    
+    { identifier: '116570031825',
       id: '18',
       functionbitmask: '640',
       fwversion: '03.67',
@@ -228,8 +249,8 @@ These definitions remain cached by the Fritz!Box even if the device is no longer
       battery: '90'
       batterylow: '0'
       temperature: { celsius: '', offset: '' },
-      hkr: { tist: '49', tsoll: '253', absenk: '32', komfort: '42', lock: '1', devicelock: '1', errorcode: '0',  
-             windowopenactiv: '0', windowopenactiveendtime: '0', boostactive: '0', boostactiveendtime: '0', 
+      hkr: { tist: '49', tsoll: '253', absenk: '32', komfort: '42', lock: '1', devicelock: '1', errorcode: '0',
+             windowopenactiv: '0', windowopenactiveendtime: '0', boostactive: '0', boostactiveendtime: '0',
              battery: '90', batterylow: '0', summeractive: '1', holidayactive: '0',
              nextchange: { endperiod: '1598907600', tchange: '32' }} }
 
