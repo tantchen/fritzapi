@@ -15,7 +15,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
+/coverage
 
 # nyc test coverage
 .nyc_output
@@ -71,5 +71,4 @@ fritzapi.code-workspace
 dist
 /fritzapi.iml
 
-# docs
-docs
+/run.sh

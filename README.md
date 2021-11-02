@@ -1,6 +1,13 @@
 # fritzapi
 > **Forked** rework in **Typescript** and more modern code style
 
+## Links
+
+- [Docs](https://elschnagoo.github.io/fritzapi/)
+- [TestReport](https://elschnagoo.github.io/fritzapi/test)
+- [Coverage](https://elschnagoo.github.io/fritzapi/coverage)
+
+
 ## New example in Ts:
 ```ts
 import Fritz from 'fritzapi'

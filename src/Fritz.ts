@@ -35,7 +35,6 @@ import {
   FUNCTION_THERMOSTAT,
   IBase,
   IExt,
-  isNumeric,
   IState,
   ITemp,
   level2api,
@@ -305,7 +304,8 @@ export default class Fritz {
 
   // get switch list
   async getSwitchList(): Promise<any[]> {
-    const res = await this.executeCommand<string>(true, 'getswitchlist', null);
+    let res = await this.executeCommand<string>(true, 'getswitchlist', null);
+    res = res.replace('\n', '');
     return res === '' ? [] : res.split(',');
   }
 
@@ -351,7 +351,7 @@ export default class Fritz {
   getSwitchPower: IExt<number | null> = async (ain) => {
     const body = await this.executeCommand<string>(true, 'getswitchpower', ain);
     const power = parseFloat(body);
-    return isNumeric(power) ? power / 1000 : null; // W
+    return Number.isNaN(power) ? null : power / 1000; // W
   };
 
   // get the outet presence status

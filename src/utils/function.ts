@@ -1,12 +1,6 @@
 import { ColorName, colors, MAX_TEMP, MIN_TEMP } from './const';
 import { IState, ITemp } from './lib';
 
-/**
- * Check if numeric value
- */
-function isNumeric(n: any) {
-  return !Number.isNaN(parseFloat(n)) && Number.isFinite(n);
-}
 /*
  * Temperature conversion
  */
@@ -114,7 +108,6 @@ function satindex2apisat(color: ColorName, satindex: number) {
 }
 
 export {
-  isNumeric,
   temp2api,
   api2temp,
   time2api,
