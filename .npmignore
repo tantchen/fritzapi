@@ -19,3 +19,4 @@ docs
 *.iml
 run.sh
 .eslintignore
+*.tgz

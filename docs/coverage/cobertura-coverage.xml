@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="303" lines-covered="202" line-rate="0.6666" branches-valid="129" branches-covered="45" branch-rate="0.3488" timestamp="1635887683343" complexity="0" version="0.1">
+<coverage lines-valid="303" lines-covered="202" line-rate="0.6666" branches-valid="129" branches-covered="45" branch-rate="0.3488" timestamp="1635888497318" complexity="0" version="0.1">
   <sources>
     <source>projects\fritzapi</source>
   </sources>
