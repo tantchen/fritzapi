@@ -1,5 +1,5 @@
 import { ColorName, colors, MAX_TEMP, MIN_TEMP } from './const';
-import { ITemp } from './lib';
+import { IState, ITemp } from './lib';
 
 /**
  * Check if numeric value
@@ -53,25 +53,20 @@ function time2api(seconds: number) {
 //     return 0;
 // }
 
-function state2api(param: number | string) {
+function state2api(param: IState): number {
   // convert the input to an allowed value
-  if (isNumeric(param)) {
-    return param > 2 ? 2 : param;
+  if (typeof param === 'number') {
+    return param;
   }
-  if (typeof param === 'string') {
-    switch (param.toUpperCase()) {
-      case 'OFF':
-        return 0;
-        break;
-      case 'ON':
-        return 1;
-        break;
-      case 'TOGGLE':
-      default:
-        return 2;
-        break;
-    }
-  } else return 2;
+  switch (param) {
+    case 'off':
+      return 0;
+    case 'on':
+      return 1;
+    case 'toggle':
+    default:
+      return 2;
+  }
 }
 
 function level2api(param: number, isPercent: boolean) {

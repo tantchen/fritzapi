@@ -11,7 +11,7 @@ function sleep(ms:number):Promise<void> {
         setTimeout(resolve, ms);
     });
 }
-
+const timeOut=1500;
 const {T_USER, T_PW, T_URL, T_DEVICE_COUNT, T_AIN, T_BULB_COUNT} = process.env;
 
 const client = new Fritz( T_USER as string, T_PW as string, T_URL as string );
@@ -58,6 +58,16 @@ describe( 'FritzClient', () => {
         expect( list.length ).toBe( Number( T_BULB_COUNT ) );
     } );
 
+
+    test( "can turn on device", async () => {
+        const result = await client.setSimpleOnOff(
+            T_AIN as string,
+            "on"
+        )
+        await sleep(timeOut)
+        expect( result ).toBe( "on" );
+    } );
+
     test( "can set bulb color red", async () => {
         const list = await client.setColor(
             T_AIN as string,
@@ -65,7 +75,7 @@ describe( 'FritzClient', () => {
             1,
             1
         )
-        await sleep(1000)
+        await sleep(timeOut)
         expect( list ).toBe( "red" );
     } );
 
@@ -76,7 +86,15 @@ describe( 'FritzClient', () => {
             1,
             1
         )
-        await sleep(1000)
+        await sleep(timeOut)
         expect( list ).toBe( "blue" );
+    } );
+    test( "can turn off device", async () => {
+        const result = await client.setSimpleOnOff(
+            T_AIN as string,
+            "off"
+        )
+        await sleep(timeOut)
+        expect( result ).toBe( "off" );
     } );
 } );

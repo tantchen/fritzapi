@@ -1,4 +1,5 @@
 export type ITemp = number | 'on' | 'off';
+export type IState = 0 | 1 | 2 | 'on' | 'off' | 'toggle';
 export type IBase<T> = () => Promise<T>;
 export type IExt<T> = (ain: string) => Promise<T>;
 

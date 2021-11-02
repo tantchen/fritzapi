@@ -36,6 +36,7 @@ import {
   IBase,
   IExt,
   isNumeric,
+  IState,
   ITemp,
   level2api,
   OSInfo,
@@ -384,7 +385,7 @@ export default class Fritz {
   };
 
   // set target temperature (Solltemperatur)
-  async setTempTarget(sid: string, ain: string, temp: number): Promise<number> {
+  async setTempTarget(ain: string, temp: number): Promise<number> {
     await this.executeCommand(true, `sethkrtsoll&param=${temp2api(temp)}`, ain);
     return temp;
   }
@@ -411,7 +412,7 @@ export default class Fritz {
   // Not yet tested - deactivated for now
   //
   // activate boost with end time or deactivate boost
-  async setHkrBoost(sid: string, ain: string, endtime: number) {
+  async setHkrBoost(ain: string, endtime: number) {
     await this.executeCommand(
       true,
       `sethkrboost&endtimestamp=${time2api(endtime)}`,
@@ -506,7 +507,7 @@ export default class Fritz {
   };
 
   // switch the device on, of or toggle its current state
-  async setSimpleOnOff(sid: string, ain: string, state: string | number) {
+  async setSimpleOnOff(ain: string, state: IState) {
     // ain = ain.replace('-1','');
     await this.executeCommand(
       true,
@@ -517,7 +518,7 @@ export default class Fritz {
   }
 
   // Dimm the device, allowed values are 0 - 255
-  async setLevel(sid: string, ain: string, level: number) {
+  async setLevel(ain: string, level: number) {
     await this.executeCommand(
       true,
       `setlevel&level=${level2api(level, false)}`,
@@ -564,7 +565,6 @@ export default class Fritz {
   // Valid values are 2700, 3000, 3400,3800, 4200, 4700, 5300, 5900 and 6500.
   // Other values are adjusted to one of the above values
   async setColorTemperature(
-    sid: string,
     ain: string,
     temperature: number,
     duration: number
@@ -594,7 +594,7 @@ export default class Fritz {
   // I don't know about any blind control unit with HANFUN support, but this API call makes
   // it plausible that AVM or a partner has somthing like that in the pipeline.
   //
-  async setBlind(sid: string, ain: string, blindState: string | number) {
+  async setBlind(ain: string, blindState: string | number) {
     // „open“, „close“ or „stop“
     await this.executeCommand(true, `setblind&target=${blindState}`, ain);
     return blindState;
@@ -666,7 +666,7 @@ export default class Fritz {
   }
 
   // set guest WLAN settings - not part of Fritz API
-  async setGuestWlan(sid: string, enable: boolean) {
+  async setGuestWlan(enable: boolean) {
     throw new Error('Not Implemented');
 
     /*  /!* jshint laxbreak:true *!/
