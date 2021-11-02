@@ -70,3 +70,6 @@ fritzapi.code-workspace
 # build
 dist
 /fritzapi.iml
+
+# docs
+docs

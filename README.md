@@ -3,9 +3,7 @@
 
 ## New example in Ts:
 ```ts
-// legacy ->  var Fritz = require('fritzapi').Fritz;
 import Fritz from 'fritzapi'
-// legacy ->  var Fritz = require('fritzapi').Fritz;
 
 const f = new Fritz("user", "password", "http://192.168.178.1");
 

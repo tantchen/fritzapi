@@ -1,3 +1,12 @@
+## 0.13.0 - pre 02
+
+- Add color type
+- Add more unit tests
+- Add full OSInfoInterface
+- Add more test env variables
+- Fix post form format
+
+
 ## 0.13.0 - pre 01
 
 - Rewrite legacy js in `typescript`

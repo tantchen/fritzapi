@@ -1,4 +1,4 @@
-import { config } from 'dotenv';
+import {config} from 'dotenv';
 import Fritz from '../src/Fritz';
 
 /**
@@ -6,19 +6,77 @@ import Fritz from '../src/Fritz';
  */
 config();
 
-const { TUSER, TPW, TURL } = process.env;
+function sleep(ms:number):Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
 
-const client = new Fritz(TUSER as string, TPW as string, TURL as string);
+const {T_USER, T_PW, T_URL, T_DEVICE_COUNT, T_AIN, T_BULB_COUNT} = process.env;
 
-describe('Base Client', () => {
-  test('can get sid', async () => {
-    const sid = await client.getSID();
-    console.log(sid);
-    expect(sid).not.toBe('');
-    expect(sid).not.toBe('0000000000000000');
-  });
+const client = new Fritz( T_USER as string, T_PW as string, T_URL as string );
 
-  test("",()=>{
+describe( 'FritzClient', () => {
+    test( 'can get sid', async () => {
+        const sid = await client.getSID();
+        console.log( sid );
+        expect( sid ).not.toBe( '' );
+        expect( sid ).not.toBe( '0000000000000000' );
+    } );
 
-  })
-});
+    test( "can validate session", async () => {
+        expect( await client.checkSession() ).toBeTruthy();
+    } )
+    test( "can check os version", async () => {
+        expect( await client.getOSVersion() ).not.toBeNull();
+    } )
+    test( "can get template list info", async () => {
+        const info = await client.getTemplateListInfos();
+        expect( info ).not.toBeNull();
+        expect( info ).not.toBeUndefined();
+    } )
+    test( "can get template list", async () => {
+        const info = await client.getTemplateList();
+        expect( info.length ).toBe( 0 );
+    } )
+    test( "can list devices", async () => {
+        const list = await client.getDeviceList()
+        expect( list.length ).toBe( Number( T_DEVICE_COUNT ) );
+    } );
+    test( "can filter list devices", async () => {
+        const list = await client.getDeviceListFiltered( {
+            manufacturer: "AVM"
+        } )
+        expect( list.length ).toBe( Number( T_DEVICE_COUNT ) );
+    } );
+    test( "can get device info", async () => {
+        const device = await client.getDevice( T_AIN as string )
+        expect( device ).not.toBeNull();
+    } );
+    test( "can get bulb list", async () => {
+        const list = await client.getBulbList()
+        expect( list.length ).toBe( Number( T_BULB_COUNT ) );
+    } );
+
+    test( "can set bulb color red", async () => {
+        const list = await client.setColor(
+            T_AIN as string,
+            "red",
+            1,
+            1
+        )
+        await sleep(1000)
+        expect( list ).toBe( "red" );
+    } );
+
+    test( "can set bulb color blue", async () => {
+        const list = await client.setColor(
+            T_AIN as string,
+            "blue",
+            1,
+            1
+        )
+        await sleep(1000)
+        expect( list ).toBe( "blue" );
+    } );
+} );

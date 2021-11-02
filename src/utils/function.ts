@@ -1,4 +1,4 @@
-import { colors, MAX_TEMP, MIN_TEMP } from './const';
+import { ColorName, colors, MAX_TEMP, MIN_TEMP } from './const';
 import { ITemp } from './lib';
 
 /**
@@ -102,16 +102,16 @@ function colortemp2api(param: number) {
 // three saturation values.
 // Any attempt to use other hue/saturaion values fails silently.
 
-function color2apihue(color: string) {
-  const col = colors.get(color.toLowerCase());
+function color2apihue(color: ColorName) {
+  const col = colors.get(color);
   if (col !== undefined)
     // convert the input to an allowed value
     return col.hue;
   return 0;
 }
 
-function satindex2apisat(color: string, satindex: number) {
-  const col = colors.get(color.toLowerCase());
+function satindex2apisat(color: ColorName, satindex: number) {
+  const col = colors.get(color);
   if (col !== undefined)
     // convert the input to an allowed value
     return col.sat[satindex > 2 ? 0 : satindex];

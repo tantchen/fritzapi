@@ -82,7 +82,21 @@ export {
 /**
  * colormap
  */
-const colors = new Map<string, HueColor>([
+type ColorName =
+  | 'red'
+  | 'orange'
+  | 'yellow'
+  | 'lime'
+  | 'green'
+  | 'turquoise'
+  | 'cyan'
+  | 'lightblue'
+  | 'blue'
+  | 'purple'
+  | 'magenta'
+  | 'pink';
+
+const colors = new Map<ColorName, HueColor>([
   ['red', { hue: 358, sat: [180, 112, 54], val: [255, 255, 255] }],
   ['orange', { hue: 35, sat: [214, 140, 72], val: [252, 252, 255] }],
   ['yellow', { hue: 52, sat: [153, 102, 51], val: [255, 255, 255] }],
@@ -97,7 +111,7 @@ const colors = new Map<string, HueColor>([
   ['pink', { hue: 335, sat: [180, 107, 51], val: [255, 248, 250] }],
 ]);
 
-export { colors };
+export { colors, ColorName };
 
 const MIN_TEMP = 8;
 const MAX_TEMP = 28;

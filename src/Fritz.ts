@@ -21,10 +21,12 @@
 import axios from 'axios';
 import crypto from 'crypto';
 import parser from 'xml2json';
+import * as qs from 'qs';
 import {
   api2temp,
   AVMDevice,
   color2apihue,
+  ColorName,
   colortemp2api,
   defaultUrl,
   FUNCTION_BUTTON,
@@ -36,6 +38,7 @@ import {
   isNumeric,
   ITemp,
   level2api,
+  OSInfo,
   ReqOption,
   satindex2apisat,
   state2api,
@@ -78,43 +81,67 @@ export default class Fritz {
    * Functional API
    */
 
-  private static async httpRequest(
+  private static async httpRequest<T>(
     request: string,
-    param: any,
     options?: ReqOption
-  ): Promise<any> {
+  ): Promise<T> {
     try {
       let res;
-      if (options === 'POST') {
-        res = await axios.post<any>(request);
+      if (options?.method === 'POST') {
+        if (options.form) {
+          const form = qs.stringify(options.form);
+
+          res = await axios.post<any>(request, form, {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          });
+        } else {
+          throw new Error('no form data');
+        }
       } else {
         res = await axios.get<any>(request);
       }
       return res.data;
     } catch (e) {
       console.error(e);
-      return null;
+      throw new Error('httpRequest Failed');
     }
   }
 
   /**
    * Execute Fritz API command for device specified by AIN
    */
-  async executeCommand(
+  async executeCommand<T>(
     sid: boolean,
     command: string | null,
     ain: string | null,
-    path?: string
+    path?: string,
+    ...param: string[]
   ) {
     const ePath = [];
+    const eParam = [];
     ePath.push(this.url);
-    ePath.push(path || '/webservices/homeautoswitch.lua?0=0');
+    if (path) {
+      ePath.push(path);
+    } else {
+      ePath.push('/webservices/homeautoswitch.lua');
+      eParam.push('0=0');
+    }
+    param.forEach((el) => {
+      eParam.push(el);
+    });
 
-    if (sid) ePath.push(`&sid=${await this.getSID()}`);
-    if (command) ePath.push(`&switchcmd=${command}`);
-    if (ain) ePath.push(`&ain=${ain}`);
+    if (sid) eParam.push(`sid=${await this.getSID()}`);
+    if (command) eParam.push(`switchcmd=${command}`);
+    if (ain) eParam.push(`ain=${ain}`);
 
-    return Fritz.httpRequest(ePath.join(''), {});
+    if (eParam.length > 0) {
+      ePath.push('?');
+      ePath.push(eParam.join('&'));
+    }
+
+    return Fritz.httpRequest<T>(ePath.join(''));
   }
 
   // #############################################################################
@@ -124,8 +151,16 @@ export default class Fritz {
    */
 
   // get session id
-  private async getSessionID(username: string, password: string) {
-    let body = await this.executeCommand(false, null, null, '/login_sid.lua');
+  private async getSessionID(
+    username: string,
+    password: string
+  ): Promise<string> {
+    let body = await this.executeCommand<any>(
+      false,
+      null,
+      null,
+      '/login_sid.lua'
+    );
 
     const challenge = body.match('<Challenge>(.*?)</Challenge>')[1];
     const challengeResponse = `${challenge}-${crypto
@@ -137,20 +172,19 @@ export default class Fritz {
     body = await this.executeCommand(false, null, null, url);
 
     const sessionID = body.match('<SID>(.*?)</SID>')[1];
-    if (sessionID === '0000000000000000') {
-      return sessionID;
-    }
     return sessionID;
   }
 
   // check if session id is OK
-  async checkSession(): Promise<string> {
-    const body = await this.executeCommand(true, null, null, '/login_sid.lua');
-    const sessionID = body.match('<SID>(.*?)</SID>')[1];
-    if (sessionID === '0000000000000000') {
-      return Promise.reject(sessionID);
-    }
-    return sessionID;
+  async checkSession(): Promise<boolean> {
+    const body = await this.executeCommand<string>(
+      true,
+      null,
+      null,
+      '/login_sid.lua'
+    );
+    const sessionID = body.match('<SID>(.*?)</SID>');
+    return !!sessionID && sessionID[1] !== '0000000000000000';
   }
 
   /*
@@ -159,7 +193,7 @@ export default class Fritz {
 
   // get OS version
   async getOSVersion() {
-    const req = {
+    const req: ReqOption = {
       method: 'POST',
       form: {
         sid: await this.getSID(),
@@ -167,10 +201,7 @@ export default class Fritz {
         page: 'overview',
       },
     };
-
-    const body = await Fritz.httpRequest('/data.lua', req);
-
-    const json = JSON.parse(body);
+    const json = await Fritz.httpRequest<OSInfo>(`${this.url}/data.lua`, req);
     const osVersion =
       json.data && json.data.fritzos && json.data.fritzos.nspver
         ? json.data.fritzos.nspver
@@ -179,8 +210,8 @@ export default class Fritz {
   }
 
   // get template information (XML)
-  async getTemplateListInfos(): Promise<any> {
-    return this.executeCommand(true, 'gettemplatelistinfos', null);
+  async getTemplateListInfos(): Promise<string> {
+    return this.executeCommand<string>(true, 'gettemplatelistinfos', null);
   }
 
   // get template information (json)
@@ -192,7 +223,7 @@ export default class Fritz {
     // extract templates as array
     let out: any[] = [];
     out = out.concat((templates.templatelist || {}).template || []);
-    out = out.map(function (template) {
+    out = out.map((template) => {
       return template;
     });
     return out;
@@ -211,13 +242,13 @@ export default class Fritz {
 
   // get detailed device information (XML)
 
-  async getDeviceListInfos(ain: string) {
-    return this.executeCommand(true, 'getdevicelistinfos', ain);
+  async getDeviceListInfos() {
+    return this.executeCommand<string>(true, 'getdevicelistinfos', null);
   }
 
   // get device list
   async getDeviceList(): Promise<AVMDevice[]> {
-    const devicelistinfo = await this.getDeviceListInfos(await this.getSID());
+    const devicelistinfo = await this.getDeviceListInfos();
     const devicesCore = JSON.parse(parser.toJson(devicelistinfo));
     // extract devices as array
     let devices: AVMDevice[] = [];
@@ -258,7 +289,7 @@ export default class Fritz {
 
   // get temperature- both switches and thermostats are supported, but not powerline modules
   async getTemperature(ain: string): Promise<number> {
-    const body = await this.executeCommand(true, 'gettemperature', ain);
+    const body = await this.executeCommand<string>(true, 'gettemperature', ain);
     return parseFloat(body) / 10; // °C
   }
 
@@ -273,56 +304,68 @@ export default class Fritz {
 
   // get switch list
   async getSwitchList(): Promise<any[]> {
-    const res = await this.executeCommand(true, 'getswitchlist', null);
+    const res = await this.executeCommand<string>(true, 'getswitchlist', null);
     return res === '' ? [] : res.split(',');
   }
 
   // get switch state
   getSwitchState: IExt<boolean> = async (ain) => {
-    const body = await this.executeCommand(true, 'getswitchstate', ain);
+    const body = await this.executeCommand<string>(true, 'getswitchstate', ain);
     return /^1/.test(body); // true if on
   };
 
   // turn an outlet on. returns the state the outlet was set to
   setSwitchOn: IExt<boolean> = async (ain) => {
-    const body = await this.executeCommand(true, 'setswitchon', ain);
+    const body = await this.executeCommand<string>(true, 'setswitchon', ain);
     return /^1/.test(body); // true if on
   };
 
   // turn an outlet off. returns the state the outlet was set to
   setSwitchOff: IExt<boolean> = async (ain) => {
-    const body = await this.executeCommand(true, 'setswitchoff', ain);
+    const body = await this.executeCommand<string>(true, 'setswitchoff', ain);
     return /^1/.test(body); // false if off
   };
 
   // toggle an outlet. returns the state the outlet was set to
   setSwitchToggle: IExt<boolean> = async (ain) => {
-    const body = await this.executeCommand(true, 'setswitchtoggle', ain);
+    const body = await this.executeCommand<string>(
+      true,
+      'setswitchtoggle',
+      ain
+    );
     return /^1/.test(body); // false if off
   };
 
   // get the total enery consumption. returns the value in Wh
   getSwitchEnergy: IExt<number> = async (ain) => {
-    const body = await this.executeCommand(true, 'getswitchenergy', ain);
+    const body = await this.executeCommand<string>(
+      true,
+      'getswitchenergy',
+      ain
+    );
     return parseFloat(body); // Wh
   };
 
   // get the current enery consumption of an outlet. returns the value in mW
   getSwitchPower: IExt<number | null> = async (ain) => {
-    const body = await this.executeCommand(true, 'getswitchpower', ain);
+    const body = await this.executeCommand<string>(true, 'getswitchpower', ain);
     const power = parseFloat(body);
     return isNumeric(power) ? power / 1000 : null; // W
   };
 
   // get the outet presence status
   getSwitchPresence: IExt<boolean> = async (ain) => {
-    const body = await this.executeCommand(true, 'getswitchpresent', ain);
+    const body = await this.executeCommand<string>(
+      true,
+      'getswitchpresent',
+      ain
+    );
     return /^1/.test(body); // true if present
   };
 
   // get switch name
-  getSwitchName: IExt<AVMDevice | null> = async (ain) => {
-    const body = await this.executeCommand(true, 'getswitchname', ain);
+  getSwitchName: IExt<string> = async (ain) => {
+    const body = await this.executeCommand<string>(true, 'getswitchname', ain);
     return body.trim();
   };
 
@@ -348,19 +391,19 @@ export default class Fritz {
 
   // get target temperature (Solltemperatur)
   getTempTarget: IExt<ITemp> = async (ain) => {
-    const body = await this.executeCommand(true, 'gethkrtsoll', ain);
+    const body = await this.executeCommand<string>(true, 'gethkrtsoll', ain);
     return api2temp(body);
   };
 
   // get night temperature (Absenktemperatur)
   getTempNight: IExt<ITemp> = async (ain) => {
-    const body = await this.executeCommand(true, 'gethkrabsenk', ain);
+    const body = await this.executeCommand<string>(true, 'gethkrabsenk', ain);
     return api2temp(body);
   };
 
   // get comfort temperature (Komforttemperatur)
   getTempComfort: IExt<ITemp> = async (ain) => {
-    const body = await this.executeCommand(true, 'gethkrkomfort', ain);
+    const body = await this.executeCommand<string>(true, 'gethkrkomfort', ain);
     return api2temp(body);
   };
 
@@ -390,7 +433,7 @@ export default class Fritz {
   async setHkrOffset(deviceId: string, offset: number) {
     const path = '/net/home_auto_hkr_edit.lua';
 
-    const req = {
+    const req: ReqOption = {
       method: 'POST',
       form: {
         sid: await this.getSID(),
@@ -501,9 +544,8 @@ export default class Fritz {
   // lightblue, blue, purple, magenta and pink
   // Valid satindex values are: 0, 1 or 2
   async setColor(
-    sid: string,
     ain: string,
-    color: string,
+    color: ColorName,
     satindex: number,
     duration: number
   ) {
@@ -614,7 +656,7 @@ export default class Fritz {
 
   // get guest WLAN settings - not part of Fritz API
   async getGuestWlan(): Promise<any> {
-    const body = await this.executeCommand(
+    const body = await this.executeCommand<string>(
       true,
       null,
       null,
