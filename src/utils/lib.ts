@@ -14,8 +14,61 @@ export interface HueColor {
   val: number[];
 }
 
-export interface AVMDevice {
-  functionbitmask: number;
+// eslint-disable-next-line @typescript-eslint/ban-types
+type BadString = string | {};
+
+export function isAVMSwitch(device: AVMDevice): device is AVMDeviceSwitch {
+  const d: any = device;
+  return d.button !== undefined && d.battery !== undefined;
+}
+export interface AVMDeviceSwitch extends AVMDevice {
+  battery: string;
+  batterylow: string;
+  temperature: { celsius: string; offset: string };
+  humidity?: { rel_humidity: string };
+  button: {
+    identifier: string;
+    id: string;
+    name: string;
+    lastpressedtimestamp: BadString;
+  }[];
+}
+export function isAVMBulb(device: AVMDevice): device is AVMDeviceBulb {
+  const d: any = device;
+  return d.simpleonoff !== undefined && d.levelcontrol !== undefined;
+}
+export interface AVMDeviceBulb extends AVMDevice {
+  simpleonoff: { state: '0' | '1' };
+  levelcontrol: { level: string; levelpercentage: string };
+  colorcontrol: {
+    supported_modes: string;
+    current_mode: string;
+    fullcolorsupport: string;
+    mapped: string;
+    hue: BadString;
+    saturation: BadString;
+    unmapped_hue: BadString;
+    unmapped_saturation: BadString;
+    temperature: BadString;
+  };
+  etsiunitinfo: {
+    etsideviceid: string;
+    unittype: string;
+    interfaces: string;
+  };
+}
+export interface AVMDeviceOpt {
+  fwversion?: string;
+  manufacturer?: string;
+  productname?: string;
+  id: string;
+  name: string;
+  present: string;
+  txbusy: string;
+}
+
+export interface AVMDevice extends AVMDeviceOpt {
+  functionbitmask: string;
   identifier: string;
   presence?: unknown;
   hkr?: any;

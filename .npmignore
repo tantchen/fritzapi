@@ -20,3 +20,4 @@ docs
 run.sh
 .eslintignore
 *.tgz
+.ncurc.json

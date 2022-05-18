@@ -1,3 +1,8 @@
+## 0.13.3
+
+- Extending AVM Device Interfaces
+- Device validation function `isAVMSwitch`,`isAVMBulb`
+
 ## 0.13.0
 
 - Add color type
