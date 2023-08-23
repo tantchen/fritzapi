@@ -1,6 +1,6 @@
 {
   "name": "@elschnagoo/fritzapi",
-  "version": "0.13.4",
+  "version": "0.13.5",
   "author": "David Nagy <david.nagy@quinto.io>",
   "description": "Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices",
   "homepage": "https://elschnagoo.github.io/fritzapi/",
@@ -49,7 +49,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "bulid": "tsc",
+    "buildprep": "tsc",
     "test": "jest --runInBand",
     "lint": "eslint src",
     "coverage": "jest --runInBand --ci --collectCoverage   --coverageDirectory=\"./docs/coverage\"",
