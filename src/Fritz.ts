@@ -661,7 +661,7 @@ export default class Fritz {
       true,
       `setlevelpercentage&level=${level2api(levelInPercent, true)}`,
       ain,
-    ).then(function (body) {
+    ).then(function () {
       /**
        * api does not return a value
        */
@@ -768,6 +768,7 @@ export default class Fritz {
    */
 
   // Parse guest WLAN form settings
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   parseGuestWlanHTML(html: string) {
     throw new Error('Not Implemented');
     /*
@@ -811,6 +812,7 @@ export default class Fritz {
   }
 
   // set guest WLAN settings - not part of Fritz API
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async setGuestWlan(enable: boolean) {
     throw new Error('Not Implemented');
 
