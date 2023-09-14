@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60.88% </span>
+                <span class="strong">61.02% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>165/271</span>
+                <span class='fraction'>166/272</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.82% </span>
+                <span class="strong">66.97% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>143/214</span>
+                <span class='fraction'>144/215</span>
             </div>
         
             
@@ -54,6 +54,12 @@
         <p class="quiet">
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input oninput="onInput()" type="search" id="fileSearch">
+            </div>
+        </template>
     </div>
     <div class='status-line medium'></div>
     <pre><table class="coverage">
@@ -1077,7 +1083,7 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1218,9 +1224,9 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1235,9 +1241,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1887,7 +1893,7 @@ export default class Fritz {
    */
   private static async httpRequest&lt;T&gt;(
     request: string,
-    options?: ReqOption
+    options?: ReqOption,
   ): Promise&lt;T&gt; {
     try {
       let res;
@@ -1944,7 +1950,7 @@ export default class Fritz {
       ePath.push('?');
       ePath.push(eParam.join('&amp;'));
     }
-&nbsp;
+    console.log(ePath.join(''));
     return Fritz.httpRequest&lt;T&gt;(ePath.join(''));
   }
 &nbsp;
@@ -1956,13 +1962,13 @@ export default class Fritz {
    */
   private async getSessionID(
     username: string,
-    password: string
+    password: string,
   ): Promise&lt;string&gt; {
     let body = await this.executeCommand&lt;any&gt;(
       false,
       null,
       null,
-      '/login_sid.lua'
+      '/login_sid.lua',
     );
 &nbsp;
     const challenge = body.match('&lt;Challenge&gt;(.*?)&lt;/Challenge&gt;')[1];
@@ -1986,7 +1992,7 @@ export default class Fritz {
       true,
       null,
       null,
-      '/login_sid.lua'
+      '/login_sid.lua',
     );
     const sessionID = body.match('&lt;SID&gt;(.*?)&lt;/SID&gt;');
     return !!sessionID &amp;&amp; sessionID[1] !== '0000000000000000';
@@ -2187,7 +2193,7 @@ export default class Fritz {
     const <span class="cstat-no" title="statement not covered" >body = <span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >await this.executeCommand&lt;string&gt;(</span></span></span>
       true,
       'setswitchtoggle',
-      ain
+      ain,
     );
 <span class="cstat-no" title="statement not covered" >    return /^1/.test(body); </span>// false if off
   };
@@ -2200,7 +2206,7 @@ export default class Fritz {
     const <span class="cstat-no" title="statement not covered" >body = <span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >await this.executeCommand&lt;string&gt;(</span></span></span>
       true,
       'getswitchenergy',
-      ain
+      ain,
     );
 <span class="cstat-no" title="statement not covered" >    return parseFloat(body); </span>// Wh
   };
@@ -2223,7 +2229,7 @@ export default class Fritz {
     const <span class="cstat-no" title="statement not covered" >body = <span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >await this.executeCommand&lt;string&gt;(</span></span></span>
       true,
       'getswitchpresent',
-      ain
+      ain,
     );
 <span class="cstat-no" title="statement not covered" >    return /^1/.test(body); </span>// true if present
   };
@@ -2306,7 +2312,7 @@ export default class Fritz {
 <span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >    await this.executeCommand(</span></span>
       true,
       `sethkrboost&amp;endtimestamp=${time2api(endtime)}`,
-      ain
+      ain,
     );
 <span class="cstat-no" title="statement not covered" >    return endtime;</span>
   }
@@ -2320,7 +2326,7 @@ export default class Fritz {
 <span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >    await this.executeCommand(</span></span>
       true,
       `sethkrwindowopen&amp;endtimestamp=${time2api(endtime)}`,
-      ain
+      ain,
     );
   }
 &nbsp;
@@ -2425,7 +2431,7 @@ export default class Fritz {
     await this.executeCommand(
       true,
       `setsimpleonoff&amp;onoff=${state2api(state)}`,
-      ain
+      ain,
     );
     return state;
   }
@@ -2439,7 +2445,7 @@ export default class Fritz {
 <span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >    await this.executeCommand(</span></span>
       true,
       `setlevel&amp;level=${level2api(level, false)}`,
-      ain
+      ain,
     );
 <span class="cstat-no" title="statement not covered" >    return level;</span>
   }
@@ -2453,7 +2459,7 @@ export default class Fritz {
 <span class="cstat-no" title="statement not covered" >    return this.executeCommand(</span>
       true,
       `setlevelpercentage&amp;level=${level2api(levelInPercent, true)}`,
-      ain
+      ain,
     ).then(<span class="fstat-no" title="function not covered" >function (b</span>ody) {
       /**
        * api does not return a value
@@ -2477,15 +2483,15 @@ export default class Fritz {
     ain: string,
     color: ColorName,
     satindex: number,
-    duration: number
+    duration: number,
   ) {
     await this.executeCommand(
       true,
       `setcolor&amp;hue=${color2apihue(color)}&amp;saturation=${satindex2apisat(
         color,
-        satindex
+        satindex,
       )}&amp;duration=${duration}`,
-      ain
+      ain,
     );
     return color;
   }
@@ -2499,13 +2505,13 @@ export default class Fritz {
 <span class="fstat-no" title="function not covered" >  async s</span>etColorTemperature(
     ain: string,
     temperature: number,
-    duration: number
+    duration: number,
   ) {
     const <span class="cstat-no" title="statement not covered" >temp = colortemp2api(temperature);</span>
 <span class="cstat-no" title="statement not covered" >    await this.executeCommand(</span>
       true,
       `setcolortemperature&amp;temperature=${temp}&amp;duration=${duration}`,
-      ain
+      ain,
     );
 <span class="cstat-no" title="statement not covered" >    return temp;</span>
   }
@@ -2598,7 +2604,7 @@ export default class Fritz {
       true,
       null,
       null,
-      '/wlan/guest_access.lua?0=0'
+      '/wlan/guest_access.lua?0=0',
     );
 <span class="cstat-no" title="statement not covered" >    return this.parseGuestWlanHTML(body);</span>
   }
@@ -2654,7 +2660,7 @@ export default class Fritz {
       true,
       null,
       null,
-      '/fon_num/foncalls_list.lua?csv='
+      '/fon_num/foncalls_list.lua?csv=',
     );
   }
 }
@@ -2664,10 +2670,9 @@ export default class Fritz {
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
-                <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Nov 02 2021 22:58:01 GMT+0100 (Mitteleuropäische Normalzeit)
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2023-09-14T12:18:36.012Z
             </div>
-        </div>
         <script src="../prettify.js"></script>
         <script>
             window.onload = function () {

@@ -1,3 +1,7 @@
+## 0.13.7
+
+- Upgrade dependencies
+
 ## 0.13.3
 
 - Extending AVM Device Interfaces

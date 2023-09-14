@@ -94,7 +94,7 @@ export default class Fritz {
    */
   private static async httpRequest<T>(
     request: string,
-    options?: ReqOption
+    options?: ReqOption,
   ): Promise<T> {
     try {
       let res;
@@ -151,7 +151,7 @@ export default class Fritz {
       ePath.push('?');
       ePath.push(eParam.join('&'));
     }
-
+    console.log(ePath.join(''));
     return Fritz.httpRequest<T>(ePath.join(''));
   }
 
@@ -163,13 +163,13 @@ export default class Fritz {
    */
   private async getSessionID(
     username: string,
-    password: string
+    password: string,
   ): Promise<string> {
     let body = await this.executeCommand<any>(
       false,
       null,
       null,
-      '/login_sid.lua'
+      '/login_sid.lua',
     );
 
     const challenge = body.match('<Challenge>(.*?)</Challenge>')[1];
@@ -193,7 +193,7 @@ export default class Fritz {
       true,
       null,
       null,
-      '/login_sid.lua'
+      '/login_sid.lua',
     );
     const sessionID = body.match('<SID>(.*?)</SID>');
     return !!sessionID && sessionID[1] !== '0000000000000000';
@@ -394,7 +394,7 @@ export default class Fritz {
     const body = await this.executeCommand<string>(
       true,
       'setswitchtoggle',
-      ain
+      ain,
     );
     return /^1/.test(body); // false if off
   };
@@ -407,7 +407,7 @@ export default class Fritz {
     const body = await this.executeCommand<string>(
       true,
       'getswitchenergy',
-      ain
+      ain,
     );
     return parseFloat(body); // Wh
   };
@@ -430,7 +430,7 @@ export default class Fritz {
     const body = await this.executeCommand<string>(
       true,
       'getswitchpresent',
-      ain
+      ain,
     );
     return /^1/.test(body); // true if present
   };
@@ -513,7 +513,7 @@ export default class Fritz {
     await this.executeCommand(
       true,
       `sethkrboost&endtimestamp=${time2api(endtime)}`,
-      ain
+      ain,
     );
     return endtime;
   }
@@ -527,7 +527,7 @@ export default class Fritz {
     await this.executeCommand(
       true,
       `sethkrwindowopen&endtimestamp=${time2api(endtime)}`,
-      ain
+      ain,
     );
   }
 
@@ -632,7 +632,7 @@ export default class Fritz {
     await this.executeCommand(
       true,
       `setsimpleonoff&onoff=${state2api(state)}`,
-      ain
+      ain,
     );
     return state;
   }
@@ -646,7 +646,7 @@ export default class Fritz {
     await this.executeCommand(
       true,
       `setlevel&level=${level2api(level, false)}`,
-      ain
+      ain,
     );
     return level;
   }
@@ -660,7 +660,7 @@ export default class Fritz {
     return this.executeCommand(
       true,
       `setlevelpercentage&level=${level2api(levelInPercent, true)}`,
-      ain
+      ain,
     ).then(function (body) {
       /**
        * api does not return a value
@@ -684,15 +684,15 @@ export default class Fritz {
     ain: string,
     color: ColorName,
     satindex: number,
-    duration: number
+    duration: number,
   ) {
     await this.executeCommand(
       true,
       `setcolor&hue=${color2apihue(color)}&saturation=${satindex2apisat(
         color,
-        satindex
+        satindex,
       )}&duration=${duration}`,
-      ain
+      ain,
     );
     return color;
   }
@@ -706,13 +706,13 @@ export default class Fritz {
   async setColorTemperature(
     ain: string,
     temperature: number,
-    duration: number
+    duration: number,
   ) {
     const temp = colortemp2api(temperature);
     await this.executeCommand(
       true,
       `setcolortemperature&temperature=${temp}&duration=${duration}`,
-      ain
+      ain,
     );
     return temp;
   }
@@ -805,7 +805,7 @@ export default class Fritz {
       true,
       null,
       null,
-      '/wlan/guest_access.lua?0=0'
+      '/wlan/guest_access.lua?0=0',
     );
     return this.parseGuestWlanHTML(body);
   }
@@ -861,7 +861,7 @@ export default class Fritz {
       true,
       null,
       null,
-      '/fon_num/foncalls_list.lua?csv='
+      '/fon_num/foncalls_list.lua?csv=',
     );
   }
 }

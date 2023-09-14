@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="307" lines-covered="206" line-rate="0.6709999999999999" branches-valid="129" branches-covered="45" branch-rate="0.3488" timestamp="1635890282015" complexity="0" version="0.1">
+<coverage lines-valid="314" lines-covered="209" line-rate="0.6656" branches-valid="133" branches-covered="45" branch-rate="0.3383" timestamp="1694693916175" complexity="0" version="0.1">
   <sources>
-    <source>projects\fritzapi</source>
+    <source>G:\Projects\fritzapi</source>
   </sources>
   <packages>
     <package name="dist" line-rate="1" branch-rate="1">
@@ -49,9 +49,9 @@
         </class>
       </classes>
     </package>
-    <package name="src" line-rate="0.6743000000000001" branch-rate="0.4301">
+    <package name="src" line-rate="0.6757" branch-rate="0.4301">
       <classes>
-        <class name="Fritz.ts" filename="src\Fritz.ts" line-rate="0.6681999999999999" branch-rate="0.4301">
+        <class name="Fritz.ts" filename="src\Fritz.ts" line-rate="0.6697" branch-rate="0.4301">
           <methods>
             <method name="(anonymous_20)" hits="1" signature="()V">
               <lines>
@@ -308,9 +308,9 @@
                 <line number="288" hits="2"/>
               </lines>
             </method>
-            <method name="(anonymous_118)" hits="4" signature="()V">
+            <method name="(anonymous_118)" hits="6" signature="()V">
               <lines>
-                <line number="294" hits="4"/>
+                <line number="294" hits="6"/>
               </lines>
             </method>
             <method name="(anonymous_119)" hits="3" signature="()V">
@@ -318,14 +318,14 @@
                 <line number="306" hits="3"/>
               </lines>
             </method>
-            <method name="(anonymous_122)" hits="6" signature="()V">
+            <method name="(anonymous_122)" hits="9" signature="()V">
               <lines>
-                <line number="311" hits="6"/>
+                <line number="311" hits="9"/>
               </lines>
             </method>
-            <method name="(anonymous_123)" hits="6" signature="()V">
+            <method name="(anonymous_123)" hits="9" signature="()V">
               <lines>
-                <line number="312" hits="6"/>
+                <line number="312" hits="9"/>
               </lines>
             </method>
             <method name="(anonymous_124)" hits="1" signature="()V">
@@ -473,6 +473,7 @@
             <line number="150" hits="12" branch="true" condition-coverage="100% (1/1)"/>
             <line number="151" hits="10" branch="false"/>
             <line number="152" hits="10" branch="false"/>
+            <line number="154" hits="12" branch="false"/>
             <line number="155" hits="12" branch="false"/>
             <line number="164" hits="1" branch="false"/>
             <line number="168" hits="1" branch="true" condition-coverage="100% (1/1)"/>
@@ -518,16 +519,16 @@
             <line number="292" hits="2" branch="false"/>
             <line number="293" hits="2" branch="true" condition-coverage="50% (2/4)"/>
             <line number="294" hits="2" branch="false"/>
-            <line number="295" hits="4" branch="false"/>
-            <line number="296" hits="4" branch="false"/>
-            <line number="297" hits="4" branch="false"/>
+            <line number="295" hits="6" branch="false"/>
+            <line number="296" hits="6" branch="false"/>
+            <line number="297" hits="6" branch="false"/>
             <line number="299" hits="2" branch="false"/>
             <line number="306" hits="1" branch="false"/>
             <line number="307" hits="5" branch="true" condition-coverage="100% (1/1)"/>
             <line number="308" hits="1" branch="false"/>
             <line number="311" hits="3" branch="true" condition-coverage="100% (1/1)"/>
-            <line number="312" hits="6" branch="false"/>
-            <line number="314" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="312" hits="9" branch="false"/>
+            <line number="314" hits="9" branch="true" condition-coverage="100% (2/2)"/>
             <line number="325" hits="1" branch="false"/>
             <line number="326" hits="1" branch="true" condition-coverage="100% (1/1)"/>
             <line number="329" hits="1" branch="true" condition-coverage="50% (1/2)"/>
@@ -653,7 +654,7 @@
         </class>
       </classes>
     </package>
-    <package name="src.utils" line-rate="0.6629" branch-rate="0.1388">
+    <package name="src.utils" line-rate="0.6420999999999999" branch-rate="0.125">
       <classes>
         <class name="const.ts" filename="src\utils\const.ts" line-rate="1" branch-rate="1">
           <methods>
@@ -800,6 +801,28 @@
             <line number="1" hits="1" branch="false"/>
             <line number="2" hits="1" branch="false"/>
             <line number="3" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="lib.ts" filename="src\utils\lib.ts" line-rate="0.3333" branch-rate="0">
+          <methods>
+            <method name="isAVMSwitch" hits="0" signature="()V">
+              <lines>
+                <line number="20" hits="0"/>
+              </lines>
+            </method>
+            <method name="isAVMBulb" hits="0" signature="()V">
+              <lines>
+                <line number="36" hits="0"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="20" hits="1" branch="false"/>
+            <line number="21" hits="0" branch="false"/>
+            <line number="22" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="36" hits="1" branch="false"/>
+            <line number="37" hits="0" branch="false"/>
+            <line number="38" hits="0" branch="true" condition-coverage="0% (0/2)"/>
           </lines>
         </class>
       </classes>
