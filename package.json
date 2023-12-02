@@ -1,5 +1,5 @@
 {
-  "name": "@elschnagoo/fritzapi",
+  "name": "@tantchen/fritzapi",
   "version": "0.13.8",
   "author": "David Nagy <david.nagy@quinto.io>",
   "description": "Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices",
