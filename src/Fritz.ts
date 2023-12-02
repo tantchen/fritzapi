@@ -151,7 +151,6 @@ export default class Fritz {
       ePath.push('?');
       ePath.push(eParam.join('&'));
     }
-    console.log(ePath.join(''));
     return Fritz.httpRequest<T>(ePath.join(''));
   }
 
