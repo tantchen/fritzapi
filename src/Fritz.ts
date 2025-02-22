@@ -20,7 +20,7 @@
 
 import axios from 'axios';
 import crypto from 'crypto';
-import parser from 'xml2json';
+import { XMLParser } from 'fast-xml-parser';
 import * as qs from 'qs';
 import {
   api2temp,
@@ -246,7 +246,8 @@ export default class Fritz {
   getTemplateList: IBase<any[]> = async () => {
     const templateinfo = await this.getTemplateListInfos();
 
-    const templates = JSON.parse(parser.toJson(templateinfo));
+    const parser = new XMLParser();
+    const templates = parser.parse(templateinfo);
 
     // extract templates as array
     let out: any[] = [];
@@ -286,7 +287,8 @@ export default class Fritz {
    */
   async getDeviceList(): Promise<AVMDevice[]> {
     const devicelistinfo = await this.getDeviceListInfos();
-    const devicesCore = JSON.parse(parser.toJson(devicelistinfo));
+    const parser = new XMLParser();
+    const devicesCore = parser.parse(devicelistinfo);
     // extract devices as array
     let devices: AVMDevice[] = [];
     devices = devices.concat((devicesCore.devicelist || {}).device || []);
