@@ -246,7 +246,11 @@ export default class Fritz {
   getTemplateList: IBase<any[]> = async () => {
     const templateinfo = await this.getTemplateListInfos();
 
-    const parser = new XMLParser();
+    const options = {
+      ignoreAttributes: false,
+      attributeNamePrefix: '',
+    };
+    const parser = new XMLParser(options);
     const templates = parser.parse(templateinfo);
 
     // extract templates as array
@@ -287,7 +291,11 @@ export default class Fritz {
    */
   async getDeviceList(): Promise<AVMDevice[]> {
     const devicelistinfo = await this.getDeviceListInfos();
-    const parser = new XMLParser();
+    const options = {
+      ignoreAttributes: false,
+      attributeNamePrefix: '',
+    };
+    const parser = new XMLParser(options);
     const devicesCore = parser.parse(devicelistinfo);
     // extract devices as array
     let devices: AVMDevice[] = [];

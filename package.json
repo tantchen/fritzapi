@@ -1,6 +1,6 @@
 {
   "name": "@tantchen/fritzapi",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "author": "Gerald Uhlig",
   "description": "Home automation node API for Fritz!Box, Fritz!DECT and FRITZ!Powerline devices",
   "homepage": "https://elschnagoo.github.io/fritzapi/",

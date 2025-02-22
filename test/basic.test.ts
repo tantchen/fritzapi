@@ -21,6 +21,7 @@ const {
   T_DEVICE_COUNT,
   T_AIN,
   T_BULB_COUNT,
+  T_TEMPLATE_COUNT,
 } = process.env;
 
 const client = new Fritz(T_USER!, T_PW!, T_URL!);
@@ -74,7 +75,7 @@ describe('Template', () => {
     'list all',
     async () => {
       const info = await client.getTemplateList();
-      expect(info.length).toBe(0);
+      expect(info.length).toBe(Number(T_TEMPLATE_COUNT));
     },
     testTimeout,
   );
