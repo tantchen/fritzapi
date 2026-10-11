@@ -1,3 +1,34 @@
+> [!WARNING]
+> **This package is deprecated and no longer maintained.**
+> Use its successor [**@tantchen/fritzbox**](https://www.npmjs.com/package/@tantchen/fritzbox)
+> ([GitHub](https://github.com/tantchen/fritzbox)) instead.
+
+## Why a new package
+
+`@tantchen/fritzbox` is a rewrite from scratch, not a new version of this fork:
+
+- **Correct types:** values have the types they really have. This package declares every device
+  value as `string`, but has delivered numbers since 0.14.
+- **PBKDF2 login** (FRITZ!OS ≥ 7.24) with MD5 fallback. This package only uses MD5.
+- **Session handling built in:** a dropped session (HTTP 403) is renewed automatically, and
+  errors keep their HTTP status instead of a bare `httpRequest Failed`.
+- **Thermostat ON / OFF** are explicit modes (`{mode: 'on'}`), not the raw values 254 / 253.
+- **TR-064 host list** (which devices are connected) is included.
+- **No runtime dependencies** (Node.js ≥ 22.12).
+
+## Migration
+
+| `@tantchen/fritzapi` | `@tantchen/fritzbox` |
+|---|---|
+| `new Fritz(user, password, url)` | `new FritzBox({url, username, password})` |
+| `getDeviceList()` | `thermostats()` – thermostats only, typed |
+| `setTempTarget(ain, celsius)` | `setTargetTemperature(ain, celsius \| 'on' \| 'off')` |
+| `getSID()` / `checkSession()` | not needed, handled internally |
+
+Target temperatures must be 8–28 °C in 0.5 °C steps; anything else is rejected instead of
+silently clamped.
+
+
 # @elschnagoo/fritzapi
 > **Forked** rework in **Typescript** and more modern code style
 
